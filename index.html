@@ -1,0 +1,146 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <title>Jarvis</title>
+  <script type='text/javascript' src="../jarvis.js"></script>
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+  <link rel="stylesheet" href="style.css" />
+</head>
+
+  <body>
+    <section id="section_header">
+      <h1><b>Hello, My name is </b><em>Jarvis</em></h1>
+   
+      <h2>I am a voice activated search engine.</h2>
+      <h2>At anytime, just say 'Hey Jarvis' and I will start a new search for you.</h2>
+    </section>
+    <section id="section_hello">
+      <p><em>Go ahead, try it&hellip;</em></p>
+      <p class="voice_instructions" id='heyjarvis'>Say "Hey Jarvis!"</p>
+      <p id="hello" class="hidden">What can I find for you?</p>
+      <p id="errorMessage" class="hidden">There was a problem with your request, please try again</p>
+    </section>
+    <section id="section_results">
+      <p><em>Say "Find pizza in San Francisco" or "Search for Mediterranean food around Oakland"</em></p>
+    </section>
+    <div id="spinner" class="spinner" style="display:none;">
+        <img id="img-spinner" src="spinner.gif" alt="Loading"/>
+    </div>
+  </body>
+  <script>
+
+  /******
+  Defining some functions to run on a voice command
+  *******/
+    var sayHello = function() {
+      $("#hello").slideDown("slow");
+      scrollTo("#section_hello");
+    };
+
+      // parameters is passed from api call to wit.ai, then used to query yahoo
+    var queryYahoo = function(parameters) {
+      console.log(Object.keys(parameters));
+        //if no location is found or no query term, invoke noMatch();
+      if((!parameters.hasOwnProperty('local_search_query') && !parameters.hasOwnProperty('places_key')) || !parameters.hasOwnProperty('location')) {
+        noMatch();
+        return;
+      }
+
+      var location = parameters.location[0].value;
+      var query;
+
+      if(parameters.local_search_query) {
+        query = parameters.local_search_query[0].value;
+      } else {
+        query = parameters.places_key[0].value;
+      }
+
+      var myQuery = 'select * from local.search where query="' + query + '" and location="' + location + '"';
+      var url = 'http://query.yahooapis.com/v1/public/yql?q=' + myQuery + '&format=json&diagnostics=false&env=store%3A%2F%2Fdatatables.org%2Falltableswithkeys&callback=?'; 
+
+      $.ajax({
+        url: url,
+        dataType: 'jsonp',
+        success: function(response) {
+          console.log('yahoo Response: ', response);
+          clearResults();
+
+          if(response.query.count === 0) {
+            noMatch();
+            return;
+          }
+
+          var resultsArr = response.query.results.Result;
+            //append the results to the page
+          for(var i = 0; i < resultsArr.length; i++){
+            var url = resultsArr[i].BusinessUrl;
+            var name = resultsArr[i].Title;
+            $('#section_results').append(
+                '<ul class= "yahooResults">' +
+                '<li><a alt="' + name + '" href="' + url + '"target="_blank">' + name + '</a></li>' +
+                '<li>' + resultsArr[i].Address + '</li>' + 
+                '<li>' + resultsArr[i].City + '</li>' +
+                '</ul>'
+              );
+          }
+          scrollTo("#section_results");
+        },
+        error: function() {
+          noMatch();
+        }
+      });
+    };
+
+  /******
+  Some jQuery functions for UI
+  ******/
+    var toggleSpinner = function() {
+      $('#spinner').toggle();
+    };
+
+    var scrollTo = function(identifier, speed) {
+      $('html, body').animate ({
+          scrollTop: $(identifier).offset().top
+      }, speed || 1000);
+    };
+
+    var clearResults = function(identifier) {
+      $('.yahooResults').empty();
+    };
+
+    var clearError = function() {
+      $("#errorMessage").slideUp("slow");
+    };
+
+      //if there is no match, or any type of error, have user repeat command
+    var noMatch = function() {
+      clearResults();
+      scrollTo("#section_results");
+      $("#hello").slideUp("slow");
+      $("#errorMessage").slideDown("slow");
+
+      // $('#section_results').append('<p class="yahooResults"> There was a problem with your request, please try again</p>');
+    };
+
+ /******
+  instantiate a new jarvis and pass it commands & callback functions
+  ******/
+
+    var commands = {
+      'hey_jarvis':      sayHello,
+      'navigate_places': queryYahoo
+    };
+    
+    var jarvis = new Jarvis();
+
+    jarvis.addCommands(commands);
+    jarvis.addCallback('result', toggleSpinner, window);
+    jarvis.addCallback('result', clearError, window);
+    jarvis.addCallback('resultMatch', toggleSpinner, window);
+    jarvis.addCallback('noMatch', noMatch, window);
+    jarvis.addCallback('noMatch', toggleSpinner, window);
+
+    jarvis.start('GFIOZCDMSJEB5KZR37VVKETFFQ4F5AB3');
+
+  </script>
+</html>

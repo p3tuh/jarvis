@@ -1,0 +1,33 @@
+<!DOCTYPE HTML>  
+<html>  
+  <head>
+    <title>Jarvis Testing Suite</title>
+
+    <!-- testing frameworks -->
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.2.5/mocha.css">
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/mocha/2.2.5/mocha.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/chai/2.3.0/chai.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/underscore.js/1.8.3/underscore-min.js"></script>
+    <!-- <script src="../node_modules/sinon/lib/sinon.js"></script> -->
+    <script src="https://ajax.googleapis.com/ajax/libs/jquery/1.11.2/jquery.min.js"></script>
+    <script>
+      mocha.setup('bdd');
+      window.expect = chai.expect;
+      $(function() {
+        window.mochaPhantomJS ? mochaPhantomJS.run() : mocha.run();
+      });
+    </script>
+
+    <!-- source files -->
+    <script src="../jarvis.js"></script>
+    <script src="../index.html"></script>
+
+    <!-- tests -->
+    <script src="tests/jarvisTest.js"></script>
+
+  </head>
+  <body>
+    <div id="mocha"></div>
+  </body>
+</html>
+

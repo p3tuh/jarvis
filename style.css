@@ -1,0 +1,95 @@
+body {
+  font: 14px/1.6 helvetica, sans-serif;
+  margin: 0 0;
+  padding: 0 0;
+  color: #333;
+}
+
+.hidden {
+  display: none;
+}
+
+h2 {
+  font-size: 2em; 
+}
+
+#section_header h2 {
+  margin: 5px 0;
+  font-size: 20px;
+  line-height: 30px;
+  font-weight: 400;
+}
+
+h1 em {
+  font-weight: 800;
+  margin-right: 9px;
+}
+
+h1 {
+  font-weight: 400;
+  font-size: 40px;
+  line-height: 41px;
+  margin: 25px 0;
+}
+
+p em {
+  font-weight: 600;
+  font-size: 23px;
+  line-height: 45px;
+}
+
+p.voice_instructions {
+  padding-left: 24px;
+}
+
+#heyjarvis {
+  color: #34495e;
+}
+
+#hello {
+  font-size: 2.5em;
+  font-weight: 600;
+}
+
+section {
+  padding: 3% 10%;
+  font-size: 20px;
+  line-height: 30px;
+  font-weight: 400;
+}
+
+#section_header {
+  padding-top: 70px;
+  text-align: center;
+  background-color: #95a5a6;
+  color: white;
+  height: 40vh;
+}
+
+#section_hello {
+  background-color: white;
+  height: 50vh;
+}
+
+#section_results{
+  background-color: #407eb8;
+  color: #fff;
+}
+
+.spinner {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    margin-left: -50px; /* half width of the spinner gif */
+    margin-top: -50px; /* half height of the spinner gif */
+    text-align:center;
+    z-index:1234;
+    overflow: auto;
+    width: 100px; /* width of the spinner gif */
+    height: 102px; /*hight of the spinner gif +2px to fix IE8 issue */
+}
+
+ul
+{
+    list-style-type: none;
+}
