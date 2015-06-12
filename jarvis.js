@@ -106,7 +106,7 @@
         invokeCallbacks(callbacks.result);
 
           //grabs the first possible user voice input, which has the highest confidence number
-        var command = event.results[event.resultIndex][0].transcript;
+        var command = event.results[event.resultIndex][0].transcript.trim();
         console.log(command);
 
           // ajax request to wit.ai with user's command
